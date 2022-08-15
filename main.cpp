@@ -161,10 +161,10 @@ int main(int argc, char* argv[]) {
         EthArpPacket* NewPacket;
         NewPacket = (EthArpPacket*)pkt_data;
         
-        uint32_t sIp = ((uint32_t)NewPacket->arp_.sip_);
+        uint32_t sIp = htonl((uint32_t)NewPacket->arp_.sip_);
         //printf("%d\n",sIp);
-        char sip[25] = {0,};
-        sprintf(sip, "%d.%d.%d.%d", (sIp >> 16) & 0xff, (sIp >> 24) &0xff, sIp & 0xff, (sIp >>8) & 0xff);
+        char sip[40] = {0,};
+        sprintf(sip, "%d.%d.%d.%d", (sIp >> 24) &0xff, (sIp >> 16) & 0xff, (sIp >>8) & 0xff, sIp & 0xff);
         printf("받아온 패킷 아이피: %s\n",sip);
         
         if(strncmp(sip, argv[2], strlen(argv[2])) == 0){ //공격대상의 아이피와 같은 응답이 오면 같이오는 공격대상의 맥주소 저장
