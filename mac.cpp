@@ -33,7 +33,9 @@ Mac& Mac::nullMac() {
 	return res;
 }
 
-Mac& Mac::broadcastMac() {
+Mac& Mac::broadcastMac() { //broadcast란 해당 네트워크에 해당되는 모든 Mac주소를 가진 기기에 신호(ARP)를 보내는 것이다.
+	//ARP를 보내게 되면 해당하는 IP에 일치하는 기기만 MAC주소를 보내주고 다른 기기들은 무시함
+	//IP에서 192.168.0.255 면 마지막에 255가 브로드캐스트 주소이고 MAC에서는 ff:ff:ff:ff:ff:ff가 브로드캐스트 주소이다!
 	static uint8_t _value[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 	static Mac res(_value);
 	return res;
